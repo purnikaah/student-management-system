@@ -12,9 +12,69 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Status {
+  ACTIVE
+  INACTIVE
+  GRADUATED
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+}
+
+enum FeeStatus {
+  PAID
+  PENDING
+  OVERDUE
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id           String   @id @default(uuid())
+  email        String   @unique
+  password     String
+  fullName     String
+  profileImage String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Course {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  students  Student[]
+  createdAt DateTime  @default(now())
+}
+
+model Student {
+  id         String       @id
+  name       String
+  semester   String
+  status     Status       @default(ACTIVE)
+  courseId   Int
+  course     Course       @relation(fields: [courseId], references: [id])
+  attendance Attendance[]
+  fees       Fee[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+model Attendance {
+  id        Int              @id @default(autoincrement())
+  date      DateTime         @default(now())
+  status    AttendanceStatus
+  studentId String
+  student   Student          @relation(fields: [studentId], references: [id])
+
+  @@index([date])
+}
+
+model Fee {
+  id        Int       @id @default(autoincrement())
+  amount    Decimal   @db.Decimal(10, 2)
+  status    FeeStatus @default(PENDING)
+  dueDate   DateTime
+  studentId String
+  student   Student   @relation(fields: [studentId], references: [id])
+  createdAt DateTime  @default(now())
 }
