@@ -29,8 +29,16 @@ enum FeeStatus {
   OVERDUE
 }
 
+enum Role {
+  Admin
+  SuperAdmin
+  Student
+}
+
 model User {
   id           String   @id @default(uuid())
+  name         String
+  role         Role     @default(Admin)
   email        String   @unique
   password     String
   fullName     String
