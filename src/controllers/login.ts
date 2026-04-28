@@ -5,7 +5,7 @@ import { UserRepository } from "../repositories/user";
 
 const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey";
 
-const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
