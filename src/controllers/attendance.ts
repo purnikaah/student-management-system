@@ -28,7 +28,6 @@ export const getHistory = async (req: Request, res: Response) => {
   try {
     const { studentId } = req.params;
 
-    // This forces whatever comes out of params to be a primitive string
     const history = await AttendanceRepo.getStudentAttendance(
       String(studentId),
     );
