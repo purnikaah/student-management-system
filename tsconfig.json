@@ -2,7 +2,14 @@
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "target": "ES2023",
+    "types": ["node"],
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+
+    /* This allows you to import 'file' and it will look for 'file.ts' */
+    "moduleDetection": "force",
     "strict": true,
     "esModuleInterop": true,
     "ignoreDeprecations": "6.0",
