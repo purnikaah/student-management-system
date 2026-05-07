@@ -1,5 +1,4 @@
 import { prisma } from "../../lib/prisma";
-import { Prisma } from "@generated/prisma/client";
 import { AttendanceStatus } from "@generated/prisma/client";
 
 export const markAttendance = async (data: {
