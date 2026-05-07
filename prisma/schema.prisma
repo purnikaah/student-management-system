@@ -43,6 +43,7 @@ model Student {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  fees      Fee[]
 }
 
 enum StudentStatus {
@@ -89,4 +90,23 @@ model Mark {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Fee {
+  id      String    @id @default(uuid())
+  amount  Float
+  status  FeeStatus @default(PENDING)
+  dueDate DateTime
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum FeeStatus {
+  PAID
+  PENDING
+  OVERDUE
 }
