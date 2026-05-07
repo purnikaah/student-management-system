@@ -1,6 +1,7 @@
 import "dotenv/config";
-import * as bcrypt from "bcrypt";
+import bcrypt from "bcrypt";
 import { prisma } from "../lib/prisma";
+import { Role } from "../generated/prisma/enums";
 
 async function main() {
   console.log("Starting database seeding...");
@@ -21,14 +22,12 @@ async function main() {
     update: {
       password: hashedPassword,
       name: adminName,
-      fullName: adminName,
     },
     create: {
       email: adminEmail,
       password: hashedPassword,
       name: adminName,
-      fullName: adminName,
-      role: "SuperAdmin",
+      role: Role.ADMIN,
     },
   });
 

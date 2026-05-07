@@ -12,94 +12,81 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Status {
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      Role     @default(TEACHER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+}
+
+model Student {
+  id          String        @id @default(uuid())
+  studentId   String        @unique
+  name        String
+  email       String        @unique
+  phoneNumber String?
+  address     String?
+  status      StudentStatus @default(ACTIVE)
+
+  courseId   Int
+  course     Course       @relation(fields: [courseId], references: [id])
+  marks      Mark[]
+  attendance Attendance[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum StudentStatus {
   ACTIVE
   INACTIVE
   GRADUATED
+  DROPPED
+}
+
+model Course {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  code     String    @unique
+  students Student[]
+}
+
+model Attendance {
+  id     String           @id @default(uuid())
+  date   DateTime         @default(now())
+  status AttendanceStatus
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, date])
 }
 
 enum AttendanceStatus {
   PRESENT
   ABSENT
-}
-
-enum FeeStatus {
-  PAID
-  PENDING
-  OVERDUE
-}
-
-enum Role {
-  Admin
-  SuperAdmin
-  Student
-}
-
-model User {
-  id           String   @id @default(uuid())
-  name         String
-  role         Role     @default(Admin)
-  email        String   @unique
-  password     String
-  fullName     String
-  profileImage String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-model Course {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique
-  students  Student[]
-  createdAt DateTime  @default(now())
-}
-
-model Student {
-  id           String       @id
-  studentId    String       @unique
-  name         String
-  email        String       @unique
-  phone        String
-  address      String
-  dob          DateTime
-  gender       String
-  semester     String
-  status       Status       @default(ACTIVE)
-  profileImage String?
-  courseId     Int
-  course       Course       @relation(fields: [courseId], references: [id])
-  attendance   Attendance[]
-  fees         Fee[]
-  marks        Mark[]
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  LATE
+  EXCUSED
 }
 
 model Mark {
-  id        Int     @id @default(autoincrement())
-  subject   String
-  marks     Int
-  remarks   String?
-  studentId String
-  student   Student @relation(fields: [studentId], references: [id])
-}
+  id       String  @id @default(uuid())
+  subject  String
+  score    Float
+  maxScore Float   @default(100)
+  term     String?
 
-model Attendance {
-  id        Int              @id @default(autoincrement())
-  date      DateTime         @default(now())
-  status    AttendanceStatus
   studentId String
-  student   Student          @relation(fields: [studentId], references: [id])
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
-  @@index([date])
-}
-
-model Fee {
-  id        Int       @id @default(autoincrement())
-  amount    Decimal   @db.Decimal(10, 2)
-  status    FeeStatus @default(PENDING)
-  dueDate   DateTime
-  studentId String
-  student   Student   @relation(fields: [studentId], references: [id])
-  createdAt DateTime  @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

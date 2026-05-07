@@ -9,7 +9,6 @@
     "noEmit": true,
     "outDir": "./dist",
 
-    /* This allows you to import 'file' and it will look for 'file.ts' */
     "moduleDetection": "force",
     "strict": true,
     "esModuleInterop": true,
